@@ -1,0 +1,26 @@
+{
+    "url": "https://github.com/francodacosta/sublime-php-getters-setters",
+    "version": "2013.01.02.15.43.15",
+    "description": "Generate getters and setters for php classes"
+}
+
+{
+    "schema_version": "1.2",
+    "packages": [
+        {
+            "name": "PHP Getters and Setters",
+            "description": "Generate getters and setters for php classes",
+            "author": "Nuno Franco da Costa",
+            "homepage": "http://www.francodacosta.com",
+            "last_modified": "2013-01-24 18:43:00",
+            "platforms": {
+                "*": [
+                    {
+                        "version": "1.0.0",
+                        "url": "https://nodeload.github.com/francodacosta/sublime-php-getters-setters/zip/1.0.0"
+                    }
+                ]
+            }
+        }
+    ]
+}

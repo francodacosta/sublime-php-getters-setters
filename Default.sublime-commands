@@ -1,0 +1,15 @@
+[
+
+    {
+        "caption": "PHP: Generate Getters and Setters",
+        "command": "php_generate_getters_setters"
+    },
+    {
+        "caption": "PHP: Generate Getters",
+        "command": "php_generate_getters"
+    },
+    {
+        "caption": "PHP: Generate Setters",
+        "command": "php_generate_getters"
+    }
+]

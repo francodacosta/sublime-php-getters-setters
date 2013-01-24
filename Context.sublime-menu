@@ -1,0 +1,13 @@
+[
+    { "caption": "-" },
+    {
+        "caption": "Getters and Setters",
+        "children":
+        [
+            { "command": "generate_getters_setters", "caption": "Generate All" },
+            { "command": "generate_getters", "caption": "Generate Getters" },
+            { "command": "generate_setters", "caption": "Generate setters" },
+            { "command": "generate_getters_setter_unavailable", "caption": "" }
+        ]
+    }
+]
