@@ -11,11 +11,11 @@ Features:
 
 * Generate Getters, Setters or Both
 * DocBlocks included
-* Description, type and Type Hinting automatically discovered from the variable dockblock
+* Description, Type and Type Hinting automatically discovered from the variable dockblock
 
 
-Example PHP Code
-----------------
+**Example PHP Code**
+
 
 ```php
 class test
@@ -29,7 +29,7 @@ class test
 }
 ```
 
-Example PHP Getters and Setters Generation
+**Example PHP Getters and Setters Generation**
 
 ```php
 class test
