@@ -1,10 +1,4 @@
 {
-    "url": "https://github.com/francodacosta/sublime-php-getters-setters",
-    "version": "2013.01.02.15.43.15",
-    "description": "Generate getters and setters for php classes"
-}
-
-{
     "schema_version": "1.2",
     "packages": [
         {
