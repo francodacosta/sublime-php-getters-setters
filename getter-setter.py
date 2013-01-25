@@ -19,7 +19,7 @@ Prefs.load()
 
 class Template(object):
     def __init__(self, name):
-        self.content = open(os.path.join(sublime.packages_path(), "php-getters-setters", "templates", name)).read()
+        self.content = open(os.path.join(sublime.packages_path(), "PHP Getters and Setters", "templates", name)).read()
 
     def replace(self, args):
         return self.content % args
