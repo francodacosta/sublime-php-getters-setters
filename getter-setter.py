@@ -162,7 +162,6 @@ class Parser(object):
         variablesList = []
 
         matches = re.findall(self.variableRegExp, content,  re.IGNORECASE)
-        print matches
         for match in matches :
             variable = self._processVariable(match)
             variablesList.append(variable)
@@ -193,8 +192,6 @@ class Variable(object):
         return self.type
 
     def GetTypeHint(self):
-        print Prefs.typeHintIgnore
-        print self.type, self.type in Prefs.typeHintIgnore
         if self.type in Prefs.typeHintIgnore :
             return ''
 
@@ -249,26 +246,27 @@ class Base(sublime_plugin.TextCommand):
         return template.replace(substitutions)
 
     def generateGetterFunction(self, parser, variable):
-        code = ''
 
-        if not parser.hasFunction(variable.getGetterFunctionName()):
-            template = Template('getter.tpl')
-            code = self.generateFunctionCode(template, variable)
-        else:
+        if parser.hasFunction(variable.getGetterFunctionName()):
             print "function %s already present, skipping" % variable.getGetterFunctionName()
+            return ''
+
+        template = Template('getter.tpl')
+        code = self.generateFunctionCode(template, variable)
 
         return code
 
     def generateSetterFunction(self, parser, variable):
-        code = ''
 
-        if not parser.hasFunction(variable.getSetterFunctionName()):
-            template = Template('setter.tpl')
-            code = self.generateFunctionCode(template, variable)
-        else:
+        if parser.hasFunction(variable.getSetterFunctionName()):
             print "function %s already present, skipping" % variable.getSetterFunctionName()
+            return ''
 
+        template = Template('setter.tpl')
+        code = self.generateFunctionCode(template, variable)
+        # if type hinting is not to be show we get "( " instead of (
         code = code.replace('( ', '(')
+
         return code
 
     def writeAtEnd(self, edit, text):
