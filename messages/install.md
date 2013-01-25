@@ -1,5 +1,3 @@
-PHP Getters and Setters
-=======================
 
 Thank you for installing php getters and setters.
 
