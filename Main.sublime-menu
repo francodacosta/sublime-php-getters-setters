@@ -29,7 +29,7 @@
                         [
                             {
                                 "command": "open_file",
-                                "args": {"file": "${packages}/php-getters-setters/php-getters-setters.sublime-settings"},
+                                "args": {"file": "${packages}/PHP Getters and Setters/php-getters-setters.sublime-settings"},
                                 "caption": "Settings – Default"
                             },
                             {
