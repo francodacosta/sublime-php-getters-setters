@@ -2,24 +2,52 @@ import sublime
 import sublime_plugin
 import re
 import os
+import json
 
 class Prefs:
     """
         Plugin preferences
     """
+    @staticmethod
+    def getSettingsFile():
+        try:
+            file = os.path.join(Prefs.packagePath, "php-getters-setters.sublime-settings")
+
+            c = open(file).read()
+            c = re.sub(r"//.*\n",'', c)
+            c = re.sub(r"/\*.*\*/",'', c)
+
+            settings = json.loads(c)
+
+            return settings
+        except Exception, e :
+            print "Can not load settings", e
+            return {}
+
 
     @staticmethod
     def load():
-        settings = sublime.load_settings('php-getters-setters.sublime-settings')
+        """
+            just because sublime.load_settings() does not goes well with spaces in folder names
+        """
 
-        Prefs.typeHintIgnore = settings.get('type_hint_ignore')
+        Prefs.packagePath = os.path.join(sublime.packages_path(), "PHP Getters and Setters")
+
+        settings = Prefs.getSettingsFile()
+
+
+        if 'type_hint_ignore' in settings :
+            Prefs.typeHintIgnore = "%s" %settings['type_hint_ignore']
+        else:
+            Prefs.typeHintIgnore = []
+
 
 
 Prefs.load()
 
 class Template(object):
     def __init__(self, name):
-        self.content = open(os.path.join(sublime.packages_path(), "PHP Getters and Setters", "templates", name)).read()
+        self.content = open(os.path.join(Prefs.packagePath, "templates", name)).read()
 
     def replace(self, args):
         return self.content % args
