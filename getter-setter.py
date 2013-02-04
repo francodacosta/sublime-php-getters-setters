@@ -89,7 +89,17 @@ class DocBlock(object):
         for line in lines:
             line = line.strip(' */')
             if (line.startswith('@')) :
-                [name, value] = line.split()
+                nameMatches = re.findall('\@(\w+) (:?.*)[ ]?.*', line)
+                print line, nameMatches
+                if len(nameMatches) >= 0 :
+                    name = nameMatches[0][0]
+                    value = nameMatches[0][1]
+
+                # [name, value, other] = line.split(" ", 2)
+                else:
+                    print "Error: could not parse line %s" %line
+
+
                 self.addTag(name.strip('@'), value)
             else:
                 if len(line) > 0:
@@ -222,6 +232,10 @@ class Variable(object):
     def GetTypeHint(self):
         if self.type in Prefs.typeHintIgnore :
             return ''
+
+        if self.type.find(" ") > -1 or self.type.find("|") > -1:
+            print "found '%s' for variable type, switching to no type hint" % self.type
+            return ""
 
         return self.type
 
