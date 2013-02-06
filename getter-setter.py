@@ -114,7 +114,7 @@ class Parser(object):
     def __init__(self, content):
         self.content        = content
         self.functionRegExp = ".*function.*%s"
-        self.variableRegExp = '((?:private|public|protected)[ ]{0,}(?:final)?[ ]{0,}(?:\$.*?)[ |=|;].*)\n'
+        self.variableRegExp = '((?:private|public|protected)[ ]{0,}(?:final|static)?[ ]{0,}(?:\$.*?)[ |=|;].*)\n'
 
     def getContent(self):
         return self.content
