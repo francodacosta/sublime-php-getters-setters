@@ -65,7 +65,7 @@ class test
 
 As you can see if get to trouble of commenting your variables, the generated function can be used without modification.
 
-This is an huge time saver
+This is an huge time saver!
 
 [1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md

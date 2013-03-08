@@ -41,6 +41,8 @@ class Prefs:
         else:
             Prefs.typeHintIgnore = []
 
+        print "ignored type hinting var types %s" % Prefs.typeHintIgnore
+
 
 
 Prefs.load()
@@ -221,10 +223,14 @@ class Variable(object):
         return self.description
 
     def getGetterFunctionName(self, style = 'camelCase'):
-        return "get%s" %self.getName().title()
+        name = self.getName()
+        var = name[0].upper() + name[1:]
+        return "get%s" % var
 
     def getSetterFunctionName(self, style = 'camelCase'):
-        return "set%s" %self.getName().title()
+        name = self.getName()
+        var = name[0].upper() + name[1:]
+        return "set%s" % var
 
     def getType(self):
         return self.type
@@ -323,6 +329,41 @@ class Base(sublime_plugin.TextCommand):
 
     def is_visible(self):
         return self.is_enabled()
+
+class PhpGenerateFor(Base):
+    what = 'getter'
+
+
+    def run(self, edit):
+        self.edit = edit
+
+        parser = self.getParser(self.getContent())
+
+        self.vars = []
+
+        for variable in parser.getClassVariables():
+            item =[ variable.getName(), variable.getDescription( )]
+            self.vars.append(item)
+
+        self.view.window().show_quick_panel(self.vars, self.write)
+
+    def write(self, index):
+        name = self.vars[index][0]
+        parser = self.getParser(self.getContent())
+        for variable in parser.getClassVariables():
+            if name == variable.getName():
+                if 'getter' == self.what :
+                    code = self.generateGetterFunction(parser, variable)
+                else:
+                    code = self.generateSetterFunction(parser, variable)
+                self.writeAtEnd(self.edit, code)
+
+class PhpGenerateGetterForCommand(PhpGenerateFor):
+    what = 'getter'
+
+class PhpGenerateSetterForCommand(PhpGenerateFor):
+    what = 'setter'
+
 
 class PhpGenerateGettersCommand(Base):
     def run(self, edit):

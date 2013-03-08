@@ -1,3 +1,12 @@
+1.0.4
+=====
+* added a few more types to type hing ignore (integer, float)
+* Generate getter or setter for a single variable
+
+1.0.3
+=====
+* proper camelCase of function names
+
 1.0.2
 =====
 * fixed bug preventing static variables to be found
