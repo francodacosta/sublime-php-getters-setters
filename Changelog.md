@@ -1,3 +1,7 @@
+1.0.5
+=====
+* parser does not crash when parsing doctrine annotations
+
 1.0.4
 =====
 * added a few more types to type hing ignore (integer, float)

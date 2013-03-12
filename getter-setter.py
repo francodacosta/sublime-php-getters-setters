@@ -93,16 +93,15 @@ class DocBlock(object):
             if (line.startswith('@')) :
                 nameMatches = re.findall('\@(\w+) (:?.*)[ ]?.*', line)
                 print line, nameMatches
-                if len(nameMatches) >= 0 :
+                if len(nameMatches) > 0 :
                     name = nameMatches[0][0]
                     value = nameMatches[0][1]
 
+                    self.addTag(name.strip('@'), value)
                 # [name, value, other] = line.split(" ", 2)
                 else:
                     print "Error: could not parse line %s" %line
 
-
-                self.addTag(name.strip('@'), value)
             else:
                 if len(line) > 0:
                     description.append(line)
