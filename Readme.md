@@ -29,7 +29,7 @@ class test
 }
 ```
 
-**Example PHP Getters and Setters Generation**
+**Example class after generating Getters and Setters**
 
 ```php
 class test
@@ -63,7 +63,7 @@ class test
 }
 ```
 
-As you can see if get to trouble of commenting your variables, the generated function can be used without modification.
+As you can see if get to trouble of commenting your variables, the generated functions can be used without modification.
 
 This is an huge time saver!
 
