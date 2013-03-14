@@ -2,8 +2,8 @@
     // paths to the templates
     "templates" : "templates/",
 
-    // coding style, currently only camel case is supported
-    "style": "camelCase",
+    // coding style, use camelCase and snake_case
+    "style": "snake_case",
 
     // if docblock says variable id any of the following do not add type hinting to functions
     "type_hint_ignore" :  ["mixed", "int","integer", "double", "float", "number", "string", "boolean", "bool", "numeric", "unknown"]

@@ -79,8 +79,9 @@ if you need to change templates you need copy to _templates/_ folder to another 
 
 ###style
 _type_: *string*
+_accepts_: camelCase | snake_case
 
-the coding style, currently only _camelCase_ is supported. (soon _snake_case_ will be supported)
+the coding style, use _camelCase_ for camel case or _snake_case_ for snake case
 
 ###type_hint_ignore
 _type_: *list of strings*

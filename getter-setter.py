@@ -202,18 +202,32 @@ class Variable(object):
             self.description = 'value of %s' %self.getName() #get description from name
         return self.description
 
-    def getPartialFunctionName(self, style = 'camelCase'):
+    def getPartialFunctionName(self):
+        style = Prefs.style
+        # print style
         name = self.getName()
+        print name
 
-        var = name[0].upper() + name[1:]
+        if 'camelCase' == style :
+            var = name[0].upper() + name[1:]
+        else :
+            var = name
 
         return var
 
-    def getGetterFunctionName(self, style = 'camelCase'):
-        return "get%s" % self.getPartialFunctionName(style)
+    def getGetterFunctionName(self):
+        style = Prefs.style
+        if 'camelCase' == style :
+            return "get%s" % self.getPartialFunctionName()
 
-    def getSetterFunctionName(self, style = 'camelCase'):
-        return "set%s" % self.getPartialFunctionName(style)
+        return "get_%s" % self.getPartialFunctionName()
+
+    def getSetterFunctionName(self):
+        style = Prefs.style
+        if 'camelCase' == style :
+            return "set%s" % self.getPartialFunctionName()
+
+        return "set_%s" % self.getPartialFunctionName()
 
     def getType(self):
         return self.type
