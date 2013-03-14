@@ -68,20 +68,21 @@ As you can see if get to trouble of commenting your variables, the generated fun
 
 This is an huge time saver!
 
-Settings
----------
-**templates**
+Settings Reference
+------------------
+
+###templates
 _type_: *string*
 
 the path to the templates folder.
 if you need to change templates you need copy to _templates/_ folder to another location and do you changes
 
-**style**
+###style
 _type_: *string*
 
 the coding style, currently only _camelCase_ is supported. (soon _snake_case_ will be supported)
 
-**type_hint_ignore**
+###type_hint_ignore
 _type_: *list of strings*
 
 if the property has one of the types listed type hinting will not be used
