@@ -72,21 +72,27 @@ Settings Reference
 ------------------
 
 ###templates
-_type_: *string*
+_type_   : **string**
 
-the path to the templates folder.
-if you need to change templates you need copy to _templates/_ folder to another location and do you changes
+_default_: **templates/**
+
+_description_: the path to the templates folder. if you need to change templates you need to copy  _templates/_ folder to another location and do you changes
 
 ###style
-_type_: *string*
-_accepts_: camelCase | snake_case
+_type_   : **string**
 
-the coding style, use _camelCase_ for camel case or _snake_case_ for snake case
+_default_: **camelCase**
+
+_accepts_: **camelCase | snake_case**
+
+_description_: the coding style, use _camelCase_ for camel case or _snake_case_ for snake case
 
 ###type_hint_ignore
-_type_: *list of strings*
+_type_: **list of strings**
 
-if the property has one of the types listed type hinting will not be used
+_default_: **["mixed", "int","integer", "double", "float", "number", "string", "boolean", "bool", "numeric", "unknown"]**
+
+_description_: if the property has one of the types listed type hinting will not be used
 
 
 [1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
