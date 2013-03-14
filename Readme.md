@@ -10,6 +10,7 @@ Features:
 ---------
 
 * Generate Getters, Setters or Both
+* Can be applied to all class properties or just to a single one
 * DocBlocks included
 * Description, Type and Type Hinting automatically discovered from the variable dockblock
 
