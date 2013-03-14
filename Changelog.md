@@ -1,5 +1,5 @@
 
-???
+1.0.7
 =====
 * refactored settings parser (moved back to sublime parser)
 * templates folder can be specified in settings
