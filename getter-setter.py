@@ -221,15 +221,19 @@ class Variable(object):
             self.description = 'value of %s' %self.getName() #get description from name
         return self.description
 
-    def getGetterFunctionName(self, style = 'camelCase'):
+    def getPartialFunctionName(self, style = 'camelCase'):
         name = self.getName()
+
         var = name[0].upper() + name[1:]
-        return "get%s" % var
+
+        print "--%s -> %s--" % (name, var)
+        return var
+
+    def getGetterFunctionName(self, style = 'camelCase'):
+        return "get%s" % self.getPartialFunctionName(style)
 
     def getSetterFunctionName(self, style = 'camelCase'):
-        name = self.getName()
-        var = name[0].upper() + name[1:]
-        return "set%s" % var
+        return "set%s" % self.getPartialFunctionName(style)
 
     def getType(self):
         return self.type
@@ -285,7 +289,7 @@ class Base(sublime_plugin.TextCommand):
         substitutions = {
             "name"           : variable.getName(),
             "type"           : variable.getType(),
-            "normalizedName" : variable.getName().title(),
+            "normalizedName" : variable.getPartialFunctionName(),
             "description"    : variable.getDescription(),
             "typeHint"       : variable.GetTypeHint()
         }

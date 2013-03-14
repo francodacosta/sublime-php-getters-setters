@@ -1,3 +1,7 @@
+1.0.6
+=====
+* function names in camel case are done properly now
+
 1.0.5
 =====
 * parser does not crash when parsing doctrine annotations
