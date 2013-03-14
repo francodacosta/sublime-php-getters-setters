@@ -1,3 +1,10 @@
+
+???
+=====
+* refactored settings parser (moved back to sublime parser)
+* templates folder can be specified in settings
+* coding style can be specified in settings
+
 1.0.6
 =====
 * function names in camel case are done properly now

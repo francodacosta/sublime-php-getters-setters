@@ -4,52 +4,34 @@ import re
 import os
 import json
 
+def msg(msg):
+    print "[PHP Getters and Setters] %s" % msg
+
 class Prefs:
     """
         Plugin preferences
     """
-    @staticmethod
-    def getSettingsFile():
-        try:
-            file = os.path.join(Prefs.packagePath, "php-getters-setters.sublime-settings")
-
-            c = open(file).read()
-            c = re.sub(r"//.*\n",'', c)
-            c = re.sub(r"/\*.*\*/",'', c)
-
-            settings = json.loads(c)
-
-            return settings
-        except Exception, e :
-            print "Can not load settings", e
-            return {}
-
 
     @staticmethod
     def load():
-        """
-            just because sublime.load_settings() does not goes well with spaces in folder names
-        """
+        settings = sublime.load_settings('php-getters-setters.sublime-settings')
 
-        Prefs.packagePath = os.path.join(sublime.packages_path(), "PHP Getters and Setters")
+        Prefs.typeHintIgnore = settings.get('type_hint_ignore')
 
-        settings = Prefs.getSettingsFile()
+        Prefs.templates =  settings.get('templates')
+        Prefs.style =  settings.get('style')
 
-
-        if 'type_hint_ignore' in settings :
-            Prefs.typeHintIgnore = "%s" %settings['type_hint_ignore']
-        else:
-            Prefs.typeHintIgnore = []
-
-        print "ignored type hinting var types %s" % Prefs.typeHintIgnore
+        msg ("ignored type hinting var types %s" % Prefs.typeHintIgnore)
+        msg ("code style is %s" % Prefs.style)
+        msg ("templates are in %s" % Prefs.templates)
 
 
 
 Prefs.load()
 
 class Template(object):
-    def __init__(self, name):
-        self.content = open(os.path.join(Prefs.packagePath, "templates", name)).read()
+    def __init__(self, name, style = "camelCase"):
+        self.content = open(os.path.join(Prefs.templates, style, name)).read()
 
     def replace(self, args):
         return self.content % args
@@ -92,7 +74,6 @@ class DocBlock(object):
             line = line.strip(' */')
             if (line.startswith('@')) :
                 nameMatches = re.findall('\@(\w+) (:?.*)[ ]?.*', line)
-                print line, nameMatches
                 if len(nameMatches) > 0 :
                     name = nameMatches[0][0]
                     value = nameMatches[0][1]
@@ -100,7 +81,7 @@ class DocBlock(object):
                     self.addTag(name.strip('@'), value)
                 # [name, value, other] = line.split(" ", 2)
                 else:
-                    print "Error: could not parse line %s" %line
+                    msg("Error: could not parse line %s" %line)
 
             else:
                 if len(line) > 0:
@@ -226,7 +207,6 @@ class Variable(object):
 
         var = name[0].upper() + name[1:]
 
-        print "--%s -> %s--" % (name, var)
         return var
 
     def getGetterFunctionName(self, style = 'camelCase'):
@@ -243,7 +223,7 @@ class Variable(object):
             return ''
 
         if self.type.find(" ") > -1 or self.type.find("|") > -1:
-            print "found '%s' for variable type, switching to no type hint" % self.type
+            msg("'%s' is more thatn one type, switching to no type hint" % self.type)
             return ""
 
         return self.type
@@ -299,10 +279,10 @@ class Base(sublime_plugin.TextCommand):
     def generateGetterFunction(self, parser, variable):
 
         if parser.hasFunction(variable.getGetterFunctionName()):
-            print "function %s already present, skipping" % variable.getGetterFunctionName()
+            msg("function %s already present, skipping" % variable.getGetterFunctionName())
             return ''
 
-        template = Template('getter.tpl')
+        template = Template('getter.tpl', Prefs.style)
         code = self.generateFunctionCode(template, variable)
 
         return code
@@ -310,10 +290,10 @@ class Base(sublime_plugin.TextCommand):
     def generateSetterFunction(self, parser, variable):
 
         if parser.hasFunction(variable.getSetterFunctionName()):
-            print "function %s already present, skipping" % variable.getSetterFunctionName()
+            msg("function %s already present, skipping" % variable.getSetterFunctionName())
             return ''
 
-        template = Template('setter.tpl')
+        template = Template('setter.tpl', Prefs.style)
         code = self.generateFunctionCode(template, variable)
         # if type hinting is not to be show we get "( " instead of (
         code = code.replace('( ', '(')
