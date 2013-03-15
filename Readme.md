@@ -94,6 +94,14 @@ _default_: **["mixed", "int","integer", "double", "float", "number", "string", "
 
 _description_: if the property has one of the types listed type hinting will not be used
 
+###fluent interface
+_type_: mixed
+
+accepts_: **true | false | ask**
+
+_default_: **ask**
+
+_description_: whether to generate code supporting a fluent interface or not, default is to ask
 
 [1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md

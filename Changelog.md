@@ -1,3 +1,6 @@
+1.0.8
+=====
+* support for fluent interfaces
 
 1.0.7
 =====
