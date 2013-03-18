@@ -18,24 +18,26 @@ class Prefs:
 
         Prefs.typeHintIgnore = settings.get('type_hint_ignore')
 
-        Prefs.templates =  settings.get('templates')
+        templatePath = settings.get('templates')
+        if False == os.path.isabs(templatePath) :
+            templatePath = os.path.join(sublime.packages_path(), "PHP Getters and Setters", templatePath)
+        Prefs.templates =  templatePath
+
         Prefs.style =  settings.get('style')
-        Prefs.fluent =  settings.get('fluent_interface')
 
         msg ("ignored type hinting var types %s" % Prefs.typeHintIgnore)
         msg ("code style is %s" % Prefs.style)
         msg ("templates are in %s" % Prefs.templates)
-        msg ("fluent interfcage?  %s" % Prefs.fluent)
+
 
 
 
 Prefs.load()
 
 class Template(object):
-    def __init__(self, name, style = "camelCase", fluent = False):
+    def __init__(self, name, style = "camelCase"):
 
-        if True == fluent:
-            name = "fluent-%s" % name
+        msg("opening template %s" % os.path.join(Prefs.templates, style, name))
 
         self.content = open(os.path.join(Prefs.templates, style, name)).read()
 
@@ -212,7 +214,6 @@ class Variable(object):
         style = Prefs.style
         # print style
         name = self.getName()
-        print name
 
         if 'camelCase' == style :
             var = name[0].upper() + name[1:]
@@ -255,8 +256,6 @@ class Base(sublime_plugin.TextCommand):
         sublime_plugin.TextCommand.__init__(self, arg)
         self.variables = None
         self.parser = None
-        self.style = None
-        self.useFluentInterface = None
 
     def getContent(self):
         return self.view.substr(sublime.Region(0, self.view.size()))
@@ -265,7 +264,6 @@ class Base(sublime_plugin.TextCommand):
         self.parser = Parser(content)
 
         return  self.parser
-
 
     def findLastBracket(self):
         view =self.view
@@ -305,7 +303,7 @@ class Base(sublime_plugin.TextCommand):
             msg("function %s already present, skipping" % variable.getGetterFunctionName())
             return ''
 
-        template = Template('getter.tpl', Prefs.style, False)
+        template = Template('getter.tpl', Prefs.style)
         code = self.generateFunctionCode(template, variable)
 
         return code
@@ -316,7 +314,7 @@ class Base(sublime_plugin.TextCommand):
             msg("function %s already present, skipping" % variable.getSetterFunctionName())
             return ''
 
-        template = Template('setter.tpl', Prefs.style, self.useFluentInterface)
+        template = Template('setter.tpl', Prefs.style)
         code = self.generateFunctionCode(template, variable)
         # if type hinting is not to be show we get "( " instead of (
         code = code.replace('( ', '(')
@@ -336,31 +334,11 @@ class Base(sublime_plugin.TextCommand):
     def is_visible(self):
         return self.is_enabled()
 
-    def run(self, edit):
-        self.edit = edit
-        if "ask" == Prefs.fluent :
-            question = ['Use Fluent Interface', 'Do not use Fluent Interface']
-            self.view.window().show_quick_panel(question, self.doWork)
-            return
-
-        index = 1
-        if True == Prefs.fluent :
-            index = 0
-
-        self.doWork(index)
-
-    def doWork(self, index):
-        print index
-        self.useFluentInterface = index == 0
-
-        self.run_command(self.edit)
-
-
 class PhpGenerateFor(Base):
     what = 'getter'
 
 
-    def run_command(self, edit):
+    def run(self, edit):
         self.edit = edit
 
         parser = self.getParser(self.getContent())
@@ -387,9 +365,6 @@ class PhpGenerateFor(Base):
 class PhpGenerateGetterForCommand(PhpGenerateFor):
     what = 'getter'
 
-    def run(self, edit):
-        self.run_command(edit)
-
 class PhpGenerateSetterForCommand(PhpGenerateFor):
     what = 'setter'
 
@@ -404,7 +379,7 @@ class PhpGenerateGettersCommand(Base):
         self.writeAtEnd(edit, code)
 
 class PhpGenerateSettersCommand(Base):
-    def run_command(self, edit):
+    def run(self, edit):
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
@@ -413,9 +388,7 @@ class PhpGenerateSettersCommand(Base):
         self.writeAtEnd(edit, code)
 
 class PhpGenerateGettersSettersCommand(Base):
-    def run_command(self, edit):
-
-
+    def run(self, edit):
 
         parser = self.getParser(self.getContent())
         code = ''
@@ -424,7 +397,6 @@ class PhpGenerateGettersSettersCommand(Base):
             code += self.generateSetterFunction(parser, variable)
 
         self.writeAtEnd(edit, code)
-    pass
 
 
 class PhpGenerateGettersSetterUnavailable(Base):
