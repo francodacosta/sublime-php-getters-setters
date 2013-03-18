@@ -13,20 +13,6 @@
                         "version": "1.0.9",
                         "url": "https://nodeload.github.com/francodacosta/sublime-php-getters-setters/zip/1.0.9"
                     }
-                ],
-
-                "*": [
-                    {
-                        "version": "1.0.8",
-                        "url": "https://nodeload.github.com/francodacosta/sublime-php-getters-setters/zip/1.0.8"
-                    }
-                ],
-
-                "*": [
-                    {
-                        "version": "1.0.7",
-                        "url": "https://nodeload.github.com/francodacosta/sublime-php-getters-setters/zip/1.0.7"
-                    }
                 ]
             }
         }
