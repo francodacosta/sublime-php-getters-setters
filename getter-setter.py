@@ -79,7 +79,7 @@ class DocBlock(object):
         description = []
 
         for line in lines:
-            line = line.strip(' */')
+            line = line.strip(' \t*/')
             if (line.startswith('@')) :
                 nameMatches = re.findall('\@(\w+) (:?.*)[ ]?.*', line)
                 if len(nameMatches) > 0 :
