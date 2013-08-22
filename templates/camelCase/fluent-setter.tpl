@@ -2,7 +2,7 @@
     /**
      * Sets the %(description)s.
      *
-     * @param %(type)s $%(name)s the %(name)s
+     * @param %(type)s $%(name)s the %(humanName)s
      *
      * @return self
      */

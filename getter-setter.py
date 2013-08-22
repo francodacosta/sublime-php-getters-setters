@@ -205,6 +205,17 @@ class Variable(object):
     def getName(self):
         return self.name
 
+    def getHumanName(self):
+        style = Prefs.style
+        name = self.getName()
+
+        if 'camelCase' == style :
+            name = ' '.join(re.findall('(?:[A-Z]|^)[^A-Z]*', name)).lower()
+        else :
+            name = name.replace('_', ' ')
+
+        return name
+
     def getDescription(self):
         if self.description is None or "" == self.description:
             self.description = 'value of %s' %self.getName() #get description from name
@@ -292,7 +303,8 @@ class Base(sublime_plugin.TextCommand):
             "type"           : variable.getType(),
             "normalizedName" : variable.getPartialFunctionName(),
             "description"    : variable.getDescription(),
-            "typeHint"       : variable.GetTypeHint()
+            "typeHint"       : variable.GetTypeHint(),
+            "humanName"      : variable.getHumanName()
         }
 
         return template.replace(substitutions)
