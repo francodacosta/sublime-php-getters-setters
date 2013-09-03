@@ -1,4 +1,13 @@
-1.0.8
+2.0.0
+======
+* st3 support
+
+1.0.10
+======
+* supports tabs
+* templates human radable var names
+
+1.0.9
 =====
 * fixed template path
 
