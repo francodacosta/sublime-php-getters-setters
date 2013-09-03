@@ -1,0 +1,47 @@
+[
+    {
+        "id": "tools",
+        "caption": "Tools",
+        "children":
+        [
+            {
+                "caption": "PHP Getters and Setters...",
+                "command": "show_overlay",
+                "args": {"overlay": "command_palette", "text": "PHP: Generate" }
+            }
+        ]
+    },
+    {
+        "caption": "Preferences",
+        "mnemonic": "n",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "PHP Getters and Setters",
+                        "children":
+                        [
+                            {
+                                "command": "open_file",
+                                "args": {"file": "${packages}/PHP Getters and Setters/php-getters-setters.sublime-settings"},
+                                "caption": "Settings – Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {"file": "${packages}/User/php-getters-setters.sublime-settings"},
+                                "caption": "Settings – User"
+                            }
+
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
