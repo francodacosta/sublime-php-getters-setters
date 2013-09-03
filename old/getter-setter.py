@@ -3,35 +3,38 @@ import sublime_plugin
 import re
 import os
 import json
+import sys
 
 def msg(msg):
-    print "[PHP Getters and Setters] %s" % msg
+    print ("[PHP Getters and Setters] %s" % msg)
 
 class Prefs:
     """
         Plugin preferences
     """
 
-    @staticmethod
-    def load():
+    def load(self):
         settings = sublime.load_settings('php-getters-setters.sublime-settings')
 
-        Prefs.typeHintIgnore = settings.get('type_hint_ignore')
+        print (settings.get('type_hint_ignore'))
+
+        self.typeHintIgnore = settings.get('type_hint_ignore')
+        msg ("ignored type hinting var types %s" % self.typeHintIgnore)
+
+        self.style =  settings.get('style')
+        msg ("code style is %s" % self.style)
 
         templatePath = settings.get('templates')
         if False == os.path.isabs(templatePath) :
+            msg ('template %s' % templatePath)
             templatePath = os.path.join(sublime.packages_path(), "PHP Getters and Setters", templatePath)
-        Prefs.templates =  templatePath
+        self.templates =  templatePath
 
-        Prefs.style =  settings.get('style')
-
-        msg ("ignored type hinting var types %s" % Prefs.typeHintIgnore)
-        msg ("code style is %s" % Prefs.style)
-        msg ("templates are in %s" % Prefs.templates)
+        msg ("templates are in %s" % self.templates)
 
 
 
-
+Prefs = Prefs()
 Prefs.load()
 
 class Template(object):
@@ -79,7 +82,7 @@ class DocBlock(object):
         description = []
 
         for line in lines:
-            line = line.strip(' \t*/')
+            line = line.strip(' */')
             if (line.startswith('@')) :
                 nameMatches = re.findall('\@(\w+) (:?.*)[ ]?.*', line)
                 if len(nameMatches) > 0 :
@@ -205,17 +208,6 @@ class Variable(object):
     def getName(self):
         return self.name
 
-    def getHumanName(self):
-        style = Prefs.style
-        name = self.getName()
-
-        if 'camelCase' == style :
-            name = ' '.join(re.findall('(?:[A-Z]|^)[^A-Z]*', name)).lower()
-        else :
-            name = name.replace('_', ' ')
-
-        return name
-
     def getDescription(self):
         if self.description is None or "" == self.description:
             self.description = 'value of %s' %self.getName() #get description from name
@@ -278,11 +270,14 @@ class Base(sublime_plugin.TextCommand):
 
     def findLastBracket(self):
         view =self.view
-        pos = long(0)
+        if sys.version > '3' :
+            pos = 0
+        else :
+            pos = long(0)
         lastPos = 0
         while pos is not None:
             pos = view.find('\}', pos);
-
+            msg(pos)
             if pos is not None:
                 lastPos = pos
                 if type(pos) == sublime.Region:
@@ -303,8 +298,7 @@ class Base(sublime_plugin.TextCommand):
             "type"           : variable.getType(),
             "normalizedName" : variable.getPartialFunctionName(),
             "description"    : variable.getDescription(),
-            "typeHint"       : variable.GetTypeHint(),
-            "humanName"      : variable.getHumanName()
+            "typeHint"       : variable.GetTypeHint()
         }
 
         return template.replace(substitutions)
