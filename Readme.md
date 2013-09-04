@@ -1,6 +1,10 @@
 PHP Getters and Setters
 =======================
 
+** Partial support for ST3, "generate for ..." is not working **
+
+
+
 With PHP Getters and Setters you can automatically generate _Getters_ and _Setters_ for your php classes.
 The code generated is compliant with [PSR1][1] and [PSR2][2] Standards
 
