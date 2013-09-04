@@ -1,27 +1,38 @@
 {
-    "schema_version": "1.2",
+    "schema_version": "2.0",
+
     "packages": [
+
         {
-            "name": "PHP Getters and Setters",
+            "name": "PHP Getters and Setters ST2",
             "description": "Generate getters and setters for php classes",
             "author": "Nuno Franco da Costa",
+            "donate": "https://www.gittip.com/francodacosta/",
             "homepage": "https://github.com/francodacosta/sublime-php-getters-setters",
             "readme": "https://raw.github.com/francodacosta/sublime-php-getters-setters/master/Readme.md",
-            "last_modified": "2013-09-04 09:43:00",
-            "platforms": {
-                "*": [
-                    {
-                        "version": "1.0.10",
-                        "sublime_text": "<3000",
-                        "url": "https://nodeload.github.com/francodacosta/sublime-php-getters-setters/zip/1.0.10"
-                    },
-                    {
-                        "version": "2.0.0",
-                        "sublime_text": ">2999",
-                        "url": "https://nodeload.github.com/francodacosta/sublime-php-getters-setters/zip/2.0.0"
-                    }
-                ]
-            }
+            "labels": ["auto-complete", "php", "snippets", "code generation", "text manipulation", "formatting"],
+            "releases": [
+                {
+                    "version": "1.0.10",
+                    "sublime_text": "<3000",
+                    "url": "https://nodeload.github.com/francodacosta/sublime-php-getters-setters/zip/1.0.10"
+                }
+            ]
+        },
+        {
+            "name": "PHP Getters and Setters ST3",
+            "description": "Generate getters and setters for php classes",
+            "author": "Nuno Franco da Costa",
+            "donate": "https://www.gittip.com/francodacosta/",
+            "homepage": "https://github.com/francodacosta/sublime-php-getters-setters",
+            "readme": "https://raw.github.com/francodacosta/sublime-php-getters-setters/master/Readme.md",
+            "labels": ["auto-complete", "php", "snippets", "code generation", "text manipulation", "formatting"],
+            "releases": [
+                {
+                    "sublime_text": ">2999",
+                    "details": "https://github.com/francodacosta/sublime-php-getters-setters/tags"
+                }
+            ]
         }
     ]
 }
