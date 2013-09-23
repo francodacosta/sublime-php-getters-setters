@@ -10,7 +10,8 @@ sys.path.append(
 import re
 import utils
 
-
+def msg(msg):
+    print ("[PHP Getters and Setters] %s" % msg)
 
 # self.Prefs.load()
 
@@ -74,7 +75,7 @@ class Variable(object):
             return ''
 
         if self.type.find(" ") > -1 or self.type.find("|") > -1:
-            msg("'%s' is more thatn one type, switching to no type hint" % self.type)
+            msg("'%s' is more than one type, switching to no type hint" % self.type)
             return ""
 
         return self.type

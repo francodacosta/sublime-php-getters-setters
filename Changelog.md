@@ -1,3 +1,8 @@
+2.0.1
+======
+* st3 bugfixes
+
+
 2.0.0
 ======
 * st3 support

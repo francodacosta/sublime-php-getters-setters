@@ -10,6 +10,9 @@ sys.path.append(
 from utils import *
 from Command import *
 
+def msg(msg):
+    print ("[PHP Getters and Setters] %s" % msg)
+
 class PhpGenerateFor(Base):
     what = 'getter'
 

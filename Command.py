@@ -15,6 +15,9 @@ from Parser import *
 from Template import *
 import utils
 
+def msg(msg):
+    print ("[PHP Getters and Setters] %s" % msg)
+
 class Base(sublime_plugin.TextCommand):
     def __init__(self, arg):
         sublime_plugin.TextCommand.__init__(self, arg)
