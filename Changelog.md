@@ -1,3 +1,8 @@
+2.0.2
+======
+* st3 version works out of the box (no more copying the templates folder)
+* user can overwrite the templates as will
+
 2.0.1
 ======
 * st3 bugfixes
