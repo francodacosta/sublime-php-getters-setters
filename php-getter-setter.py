@@ -6,9 +6,13 @@ import sublime_plugin
 import sys
 import re
 
-sys.path.append(os.path.join('.'));
+# sys.path.append(
+#     os.path.join(
+#         os.path.dirname(os.path.realpath(__file__))
+#     )
+# )
 print (sys.path)
-# from user_templates import *
+from .user_templates import *
 
 
 def msg(msg):
@@ -18,28 +22,33 @@ class Prefs:
     """
         Plugin preferences
     """
-    loaded = False
-    # def __init__():
-    #     self.load()
+    def __init__(self):
+        self.loaded = False
+        self.data = {};
 
-    @staticmethod
-    def load():
-        if Prefs.loaded :
+    def get(self, name):
+        if (False == self.loaded) :
+            self.load();
+
+        return self.data[name]
+
+    def load(self):
+        if self.loaded :
             return
 
         settings = sublime.load_settings('php-getters-setters.sublime-settings')
 
-        Prefs.typeHintIgnore = settings.get('type_hint_ignore')
-        msg ("ignored type hinting var types %s" % Prefs.typeHintIgnore)
+        self.data['typeHintIgnore'] = settings.get('type_hint_ignore')
+        msg ("ignored type hinting var types %s" % self.data['typeHintIgnore'])
 
-        Prefs.template = settings.get('template')
-        msg ("template is  '%s'" % Prefs.template)
+        self.data['template'] = settings.get('template')
+        msg ("template is  '%s'" % self.data['template'])
 
 
-        Prefs.registerTemplates = settings.get('registerTemplates')
-        msg("register extra user templates %s" % Prefs.registerTemplates)
+        self.data['registerTemplates'] = settings.get('registerTemplates', [])
+        msg("register extra user templates %s" % self.data['registerTemplates'])
 
-        Prefs.loaded = True
+        self.loaded = True
 
 
 
@@ -63,13 +72,15 @@ class Variable(object):
         self.type        = typeName
         self.description = description
         self.Prefs       = Prefs
+        self.template    = TemplateManager.get(self.Prefs.get('template'))
+        self.style       = self.template.style
 
 
     def getName(self):
         return self.name
 
     def getHumanName(self):
-        style = self.Prefs.style
+        style = self.style
         name = self.getName()
 
         if 'camelCase' == style :
@@ -85,7 +96,7 @@ class Variable(object):
         return self.description
 
     def getPartialFunctionName(self):
-        style = self.Prefs.style
+        style = self.style
         # print style
         name = self.getName()
 
@@ -97,14 +108,14 @@ class Variable(object):
         return var
 
     def getGetterFunctionName(self):
-        style = self.Prefs.style
+        style = self.style
         if 'camelCase' == style :
             return "get%s" % self.getPartialFunctionName()
 
         return "get_%s" % self.getPartialFunctionName()
 
     def getSetterFunctionName(self):
-        style = self.Prefs.style
+        style = self.style
         if 'camelCase' == style :
             return "set%s" % self.getPartialFunctionName()
 
@@ -114,7 +125,7 @@ class Variable(object):
         return self.type
 
     def GetTypeHint(self):
-        if self.type in self.Prefs.typeHintIgnore :
+        if self.type in self.Prefs.get('typeHintIgnore') :
             return ''
 
         if self.type.find(" ") > -1 or self.type.find("|") > -1:
@@ -300,14 +311,17 @@ class Base(sublime_plugin.TextCommand):
         lastPos = 1
 
         pos = view.find('\{', 0)
-
-        while pos.begin() != lastPos:
+        print (pos)
+        count = 0
+        while pos.end() != lastPos and lastPos != -1 :
             pos = view.find('\}', pos.end());
-            msg(pos)
-            lastPos = pos.begin()
+            print ('pos', pos)
+            lastPos = pos.end()
+            print ('last pos', pos)
 
 
-        return lastPos
+
+        return pos.end()
 
     def getVariables(self, parser):
         filename = self.view.file_name()
@@ -326,7 +340,7 @@ class Base(sublime_plugin.TextCommand):
             "humanName"      : variable.getHumanName()
         }
 
-        return template.replace(substitutions)
+        return template % substitutions
 
     def generateGetterFunction(self, parser, variable):
 
@@ -334,8 +348,8 @@ class Base(sublime_plugin.TextCommand):
             msg("function %s already present, skipping" % variable.getGetterFunctionName())
             return ''
 
-        template = Template('getter.tpl', self.Prefs.style)
-        code = self.generateFunctionCode(template, variable)
+        template = TemplateManager.get(Prefs.get('template'))
+        code = self.generateFunctionCode(template.getter, variable)
 
         return code
 
@@ -345,8 +359,8 @@ class Base(sublime_plugin.TextCommand):
             msg("function %s already present, skipping" % variable.getSetterFunctionName())
             return ''
 
-        template = Template('setter.tpl', self.Prefs.style)
-        code = self.generateFunctionCode(template, variable)
+        template =TemplateManager.get(Prefs.get('template'))
+        code = self.generateFunctionCode(template.setter, variable)
         # if type hinting is not to be show we get "( " instead of (
         code = code.replace('( ', '(')
 
@@ -443,22 +457,10 @@ class PhpGenerateGettersSetterUnavailable(Base):
     def description(self):
         return "Only available for PHP syntax buffers"
 
-class Template(object):
-    setter = ''
-    getter = ''
-    name   = ''
 
-    def getSetter(self):
-        return self.setter
-
-    def getter(self):
-        return self.getter
-
-    def getName(self):
-        return self.name
-
-class camelCase(Template):
+class camelCase(object):
     name = "camelCase"
+    style = 'camelCase'
     getter = """
     /**
      * Gets the %(description)s.
@@ -485,9 +487,10 @@ class camelCase(Template):
 
         return $this;
     }
-    """
+"""
 class camelCaseFluent(camelCase):
     name = "camelCaseFluent"
+    style = 'camelCase'
     setter ="""
     /**
      * Sets the %(description)s.
@@ -502,10 +505,11 @@ class camelCaseFluent(camelCase):
 
         return $this;
     }
-    """
+"""
 
-class snakeCase(Template):
+class snakeCase(object):
     name = "snakeCase"
+    style = 'snakeCase'
     getter = """
     /**
      * Gets the %(description)s.
@@ -516,7 +520,7 @@ class snakeCase(Template):
     {
         return $this->%(name)s;
     }
-    """
+"""
     setter = """
     /**
      * Sets the %(description)s.
@@ -527,12 +531,12 @@ class snakeCase(Template):
     {
         $this->%(name)s = $%(name)s;
     }
-
-    """
+"""
 
 
 class snakeCaseFluent(snakeCase):
     name = "snakeCaseFluent"
+    style = 'snakeCase'
     setter ="""
         /**
      * Sets the %(description)s.
@@ -551,7 +555,6 @@ class snakeCaseFluent(snakeCase):
 
 
 Prefs = Prefs();
-Prefs.load();
 
 
 TemplateManager = TemplateManager()
@@ -560,6 +563,6 @@ TemplateManager.register(camelCaseFluent())
 TemplateManager.register(snakeCase())
 TemplateManager.register(snakeCaseFluent())
 
-for template in Prefs.registerTemplates :
+for template in Prefs.get('registerTemplates') :
     TemplateManager.register(eval(template+'()'))
 
