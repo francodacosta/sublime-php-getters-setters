@@ -311,17 +311,19 @@ class Base(sublime_plugin.TextCommand):
         lastPos = 1
 
         pos = view.find('\{', 0)
-        print (pos)
-        count = 0
-        while pos.end() != lastPos and lastPos != -1 :
+
+        while True:
             pos = view.find('\}', pos.end());
-            print ('pos', pos)
-            lastPos = pos.end()
-            print ('last pos', pos)
+            msg(lastPos)
+
+            if (pos.begin() == -1):
+                break
+
+            lastPos = pos.begin()
 
 
+        return lastPos
 
-        return pos.end()
 
     def getVariables(self, parser):
         filename = self.view.file_name()
@@ -558,11 +560,13 @@ Prefs = Prefs();
 
 
 TemplateManager = TemplateManager()
-TemplateManager.register(camelCase())
-TemplateManager.register(camelCaseFluent())
-TemplateManager.register(snakeCase())
-TemplateManager.register(snakeCaseFluent())
 
-for template in Prefs.get('registerTemplates') :
-    TemplateManager.register(eval(template+'()'))
+def plugin_loaded():
+    TemplateManager.register(camelCase())
+    TemplateManager.register(camelCaseFluent())
+    TemplateManager.register(snakeCase())
+    TemplateManager.register(snakeCaseFluent())
+
+    for template in Prefs.get('registerTemplates') :
+        TemplateManager.register(eval(template+'()'))
 
