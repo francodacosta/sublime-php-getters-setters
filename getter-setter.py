@@ -214,7 +214,7 @@ class Variable(object):
         style = Prefs.style
         # print style
         name = self.getName()
-
+        name = name.lstrip('_')
         if 'camelCase' == style :
             var = name[0].upper() + name[1:]
         else :
@@ -289,6 +289,7 @@ class Base(sublime_plugin.TextCommand):
     def generateFunctionCode(self, template, variable):
         substitutions = {
             "name"           : variable.getName(),
+            "nameVar"        : variable.getName().lstrip('_'),
             "type"           : variable.getType(),
             "normalizedName" : variable.getPartialFunctionName(),
             "description"    : variable.getDescription(),

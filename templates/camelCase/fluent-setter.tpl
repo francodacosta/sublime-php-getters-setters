@@ -6,9 +6,9 @@
      *
      * @return self
      */
-    public function set%(normalizedName)s(%(typeHint)s $%(name)s)
+    public function set%(normalizedName)s(%(typeHint)s $%(nameVar)s)
     {
-        $this->%(name)s = $%(name)s;
+        $this->%(name)s = $%(nameVar)s;
 
         return $this;
     }
