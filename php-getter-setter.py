@@ -295,7 +295,10 @@ class Base(sublime_plugin.TextCommand):
         self.variables = None
         self.parser = None
         self.Prefs = Prefs
+        self.onlyForVar = None
 
+    def onlyForVar(self, varName):
+        self.onlyForVar = varName
 
     def getContent(self):
         return self.view.substr(sublime.Region(0, self.view.size()))
@@ -405,10 +408,11 @@ class PhpGenerateFor(Base):
         for variable in parser.getClassVariables():
             if name == variable.getName():
                 if 'getter' == self.what :
-                    code = self.generateGetterFunction(parser, variable)
+                    # code = self.generateGetterFunction(parser, variable)
+                    self.view.run_command('php_generate_getters', {'name': name})
                 else:
-                    code = self.generateSetterFunction(parser, variable)
-                self.writeAtEnd(self.edit, code)
+                    self.view.run_command('php_generate_setters', {'name': name})
+                # self.writeAtEnd(self.edit, code)
 
 class PhpGenerateGetterForCommand(PhpGenerateFor):
     what = 'getter'
@@ -417,19 +421,25 @@ class PhpGenerateSetterForCommand(PhpGenerateFor):
     what = 'setter'
 
 class PhpGenerateGettersCommand(Base):
-    def run(self, edit):
+    def run(self, edit, **args):
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
+            if (args['name'] is not None and variable.getName() != args['name']) :
+                continue
+
             code += self.generateGetterFunction(parser, variable)
 
         self.writeAtEnd(edit, code)
 
 class PhpGenerateSettersCommand(Base):
-    def run(self, edit):
+    def run(self, edit, **args):
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
+            if (args['name'] is not None and variable.getName() != args['name']) :
+                continue
+
             code += self.generateSetterFunction(parser, variable)
 
         self.writeAtEnd(edit, code)

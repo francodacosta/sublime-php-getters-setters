@@ -1,3 +1,7 @@
+2.0.4
+======
+* generate for ... now works with st3
+
 2.0.2
 ======
 * st3 version works out of the box (no more copying the templates folder)
@@ -6,7 +10,6 @@
 2.0.1
 ======
 * st3 bugfixes
-
 
 2.0.0
 ======
