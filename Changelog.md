@@ -1,5 +1,9 @@
 2.0.4
 ======
+* generate getter and setter for
+
+2.0.4
+======
 * generate for ... now works with st3
 
 2.0.2

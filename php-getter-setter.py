@@ -410,8 +410,10 @@ class PhpGenerateFor(Base):
                 if 'getter' == self.what :
                     # code = self.generateGetterFunction(parser, variable)
                     self.view.run_command('php_generate_getters', {'name': name})
-                else:
+                elif 'setter' == self.what :
                     self.view.run_command('php_generate_setters', {'name': name})
+                else :
+                    self.view.run_command('php_generate_getters_setters', {'name': name})
                 # self.writeAtEnd(self.edit, code)
 
 class PhpGenerateGetterForCommand(PhpGenerateFor):
@@ -419,6 +421,9 @@ class PhpGenerateGetterForCommand(PhpGenerateFor):
 
 class PhpGenerateSetterForCommand(PhpGenerateFor):
     what = 'setter'
+
+class PhpGenerateGetterSetterForCommand(PhpGenerateFor):
+    what = 'getter-setter'
 
 class PhpGenerateGettersCommand(Base):
     def run(self, edit, **args):
@@ -445,11 +450,14 @@ class PhpGenerateSettersCommand(Base):
         self.writeAtEnd(edit, code)
 
 class PhpGenerateGettersSettersCommand(Base):
-    def run(self, edit):
+    def run(self, edit, **args):
 
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
+            if (args['name'] is not None and variable.getName() != args['name']) :
+                continue
+
             code += self.generateGetterFunction(parser, variable)
             code += self.generateSetterFunction(parser, variable)
 

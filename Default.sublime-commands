@@ -19,5 +19,6 @@
     {
         "command": "php_generate_setter_for",
         "caption": "Generate Setter for ..."
-    }
+    },
+    { "command": "php_generate_getter_setter_for", "caption": "Generate Getter and Setter for ..." },
 ]
