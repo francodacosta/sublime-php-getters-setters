@@ -1,4 +1,12 @@
-2.0.4
+2.0.7
+======
+* bug fix
+
+2.0.6
+======
+* bug fix
+
+2.0.5
 ======
 * generate getter and setter for
 

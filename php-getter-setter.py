@@ -427,6 +427,9 @@ class PhpGenerateGetterSetterForCommand(PhpGenerateFor):
 
 class PhpGenerateGettersCommand(Base):
     def run(self, edit, **args):
+        if not 'name' in args :
+            args['name'] = None
+
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
@@ -439,6 +442,9 @@ class PhpGenerateGettersCommand(Base):
 
 class PhpGenerateSettersCommand(Base):
     def run(self, edit, **args):
+        if not 'name' in args :
+            args['name'] = None
+
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
@@ -451,6 +457,8 @@ class PhpGenerateSettersCommand(Base):
 
 class PhpGenerateGettersSettersCommand(Base):
     def run(self, edit, **args):
+        if not 'name' in args :
+            args['name'] = None
 
         parser = self.getParser(self.getContent())
         code = ''
