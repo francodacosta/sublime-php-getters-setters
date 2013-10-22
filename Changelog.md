@@ -1,3 +1,7 @@
+2.0.8
+======
+* bug fix - separator in contex menu
+
 2.0.7
 ======
 * bug fix
