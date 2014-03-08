@@ -92,12 +92,20 @@ class Variable(object):
 
         return Prefix
 
+    def getParam( self ) :
+        name = self.name
+
+        if ( name[0] == '_' ) :
+            name = name[1:]
+
+        return name
+
     def getHumanName(self):
         style = self.style
         name = self.getName()
 
         if 'camelCase' == style :
-            name = ' '.join(re.findall('(?:[A-Z]|^)[^A-Z]*', name)).lower()
+            name = ' '.join(re.findall('(?:[^_a-z]{0,2})[^_A-Z]*', name)).lower()
         else :
             name = name.replace('_', ' ')
 
@@ -366,6 +374,7 @@ class Base(sublime_plugin.TextCommand):
     def generateFunctionCode(self, template, variable):
         substitutions = {
             "name"           : variable.getName(),
+            "param"          : variable.getParam(),
             "visibility"     : variable.getVisibility(),
             "visibilityPrefix" : variable.getVisibilityPrefix(),
             "type"           : variable.getType(),
@@ -539,9 +548,9 @@ class camelCase(object):
      *
      * @return self
      */
-    %(visibility)s function %(visibilityPrefix)sset%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset%(normalizedName)s(%(typeHint)s $%(param)s)
     {
-        $this->%(name)s = $%(name)s;
+        $this->%(name)s = $%(param)s;
 
         return $this;
     }
@@ -557,9 +566,9 @@ class camelCaseFluent(camelCase):
      *
      * @return self
      */
-    %(visibility)s function %(visibilityPrefix)sset%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset%(normalizedName)s(%(typeHint)s $%(param)s)
     {
-        $this->%(name)s = $%(name)s;
+        $this->%(name)s = $%(param)s;
 
         return $this;
     }
@@ -585,9 +594,9 @@ class snakeCase(object):
      *
      * @param %(type)s $%(name)s the %(name)s
      */
-    %(visibility)s function %(visibilityPrefix)sset_%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset_%(normalizedName)s(%(typeHint)s $%(param)s)
     {
-        $this->%(name)s = $%(name)s;
+        $this->%(name)s = $%(param)s;
     }
 """
 
@@ -603,9 +612,9 @@ class snakeCaseFluent(snakeCase):
      *
      * @return self
      */
-    %(visibility)s function %(visibilityPrefix)sset_%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset_%(normalizedName)s(%(typeHint)s $%(param)s)
     {
-        $this->%(name)s = $%(name)s;
+        $this->%(name)s = $%(param)s;
 
         return $this;
     }
