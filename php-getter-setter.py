@@ -67,8 +67,9 @@ class TemplateManager(object):
 
 
 class Variable(object):
-    def __init__(self, name, typeName = None, description=None):
+    def __init__(self, name, visibility, typeName = None, description=None):
         self.name        = name
+        self.visibility  = visibility
         self.type        = typeName
         self.description = description
         self.Prefs       = Prefs
@@ -78,6 +79,18 @@ class Variable(object):
 
     def getName(self):
         return self.name
+
+    def getVisibility(self):
+        return self.visibility
+
+    def getVisibilityPrefix( self ) :
+        visibility = self.visibility
+        Prefix = ''
+
+        if ( visibility == 'private' ) :
+            Prefix = '_'
+
+        return Prefix
 
     def getHumanName(self):
         style = self.style
@@ -123,10 +136,12 @@ class Variable(object):
 
     def getSetterFunctionName(self):
         style = self.style
-        if 'camelCase' == style :
-            return "set%s" % self.getPartialFunctionName()
+        visPrefix = self.getVisibilityPrefix()
 
-        return "set_%s" % self.getPartialFunctionName()
+        if 'camelCase' == style :
+            return visPrefix + "set%s" % self.getPartialFunctionName()
+
+        return visPrefix + "set_%s" % self.getPartialFunctionName()
 
     def getType(self):
         return self.type
@@ -269,6 +284,12 @@ class Parser(object):
         if len(nameMatches) >= 0 :
             name = nameMatches[0]
 
+        visibility = 'public'
+        visibilityMatches = re.findall( '^(public|protected|private)', line )
+
+        if len( visibilityMatches ) >= 0 :
+            visibility = visibilityMatches[0]
+
         dockBlockText = self._getDockBlockOfVariable(line)
         docblock = DocBlock()
         docblock.fromText(dockBlockText)
@@ -278,7 +299,7 @@ class Parser(object):
             typeName    =  docblock.getTag('var')
         description = docblock.getDescription()
 
-        return Variable(name = name, typeName = typeName, description = description)
+        return Variable(name = name, visibility = visibility, typeName = typeName, description = description)
 
     def getClassVariables(self):
         """
@@ -345,6 +366,8 @@ class Base(sublime_plugin.TextCommand):
     def generateFunctionCode(self, template, variable):
         substitutions = {
             "name"           : variable.getName(),
+            "visibility"     : variable.getVisibility(),
+            "visibilityPrefix" : variable.getVisibilityPrefix(),
             "type"           : variable.getType(),
             "normalizedName" : variable.getPartialFunctionName(),
             "description"    : variable.getDescription(),
@@ -516,7 +539,7 @@ class camelCase(object):
      *
      * @return self
      */
-    public function set%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset%(normalizedName)s(%(typeHint)s $%(name)s)
     {
         $this->%(name)s = $%(name)s;
 
@@ -534,7 +557,7 @@ class camelCaseFluent(camelCase):
      *
      * @return self
      */
-    public function set%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset%(normalizedName)s(%(typeHint)s $%(name)s)
     {
         $this->%(name)s = $%(name)s;
 
@@ -562,7 +585,7 @@ class snakeCase(object):
      *
      * @param %(type)s $%(name)s the %(name)s
      */
-    public function set_%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset_%(normalizedName)s(%(typeHint)s $%(name)s)
     {
         $this->%(name)s = $%(name)s;
     }
@@ -580,7 +603,7 @@ class snakeCaseFluent(snakeCase):
      *
      * @return self
      */
-    public function set_%(normalizedName)s(%(typeHint)s $%(name)s)
+    %(visibility)s function %(visibilityPrefix)sset_%(normalizedName)s(%(typeHint)s $%(name)s)
     {
         $this->%(name)s = $%(name)s;
 
