@@ -48,6 +48,9 @@ class Prefs:
         self.data['registerTemplates'] = settings.get('registerTemplates', [])
         msg("register extra user templates %s" % self.data['registerTemplates'])
 
+        self.setterBeforeGetter = settings.get('setter_before_getter', False)
+        msg("setterBeforeGetter is %s" % str(self.setterBeforeGetter))
+
         self.loaded = True
 
 
