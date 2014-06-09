@@ -508,8 +508,12 @@ class PhpGenerateGettersSettersCommand(Base):
             if (args['name'] is not None and variable.getName() != args['name']) :
                 continue
 
-            code += self.generateGetterFunction(parser, variable)
-            code += self.generateSetterFunction(parser, variable)
+            if self.Prefs.setterBeforeGetter:
+                code += self.generateSetterFunction(parser, variable)
+                code += self.generateGetterFunction(parser, variable)
+            else:
+                code += self.generateGetterFunction(parser, variable)
+                code += self.generateSetterFunction(parser, variable)
 
         self.writeAtEnd(edit, code)
 
