@@ -12,55 +12,57 @@ Features:
 * Description, Type and Type Hinting automatically discovered from the variable dockblock
 * fully customizable templates
 
+Usage Instruction:
+------------------
 
-**Example PHP Code**
+1. Generate PHP code
 
-
-```php
-class test
-{
-    /**
-     * foo container
-     *
-     * @var AbcClass
-     */
-    private $foo;
-}
-```
-
-**Example class after generating Getters and Setters**
-
-```php
-class test
-{
-    /**
-     * foo container
-     *
-     * @var AbcClass
-     */
-    private $foo;
-
-    /**
-     * Gets the foo container.
-     *
-     * @return AbcClass
-     */
-    public function getFoo()
+    ```php
+    class test
     {
-        return $this->foo;
+        /**
+         * foo container
+         *
+         * @var AbcClass
+         */
+        private $foo;
     }
+    ```
 
-    /**
-     * Sets the foo container.
-     *
-     * @param AbcClass $foo the foo
-     */
-    public function setFoo(AbcClass $foo)
+2. Go to Tools -> PHP Getters and Setter
+3. Getter and Setter will be generated:
+
+    ```php
+    class test
     {
-        $this->foo = $foo;
+        /**
+         * foo container
+         *
+         * @var AbcClass
+         */
+        private $foo;
+    
+        /**
+         * Gets the foo container.
+         *
+         * @return AbcClass
+         */
+        public function getFoo()
+        {
+            return $this->foo;
+        }
+    
+        /**
+         * Sets the foo container.
+         *
+         * @param AbcClass $foo the foo
+         */
+        public function setFoo(AbcClass $foo)
+        {
+            $this->foo = $foo;
+        }
     }
-}
-```
+    ```
 
 As you can see if get to trouble of commenting your variables, the generated functions can be used without modification.
 
