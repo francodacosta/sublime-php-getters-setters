@@ -378,7 +378,7 @@ class Base(sublime_plugin.TextCommand):
         substitutions = {
             "name"           : variable.getName(),
             "param"          : variable.getParam(),
-            "visibility"     :  'public' #variable.getVisibility(),
+            "visibility"     :  'public', #variable.getVisibility(),
             "visibilityPrefix" : variable.getVisibilityPrefix(),
             "type"           : variable.getType(),
             "normalizedName" : variable.getPartialFunctionName(),
