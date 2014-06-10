@@ -379,7 +379,7 @@ class Base(sublime_plugin.TextCommand):
             "name"           : variable.getName(),
             "param"          : variable.getParam(),
             "visibility"     :  'public', #variable.getVisibility(),
-            "visibilityPrefix" : '', variable.getVisibilityPrefix(),
+            "visibilityPrefix" : '', #variable.getVisibilityPrefix(),
             "type"           : variable.getType(),
             "normalizedName" : variable.getPartialFunctionName(),
             "description"    : variable.getDescription(),
