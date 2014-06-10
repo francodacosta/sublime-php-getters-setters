@@ -9,7 +9,7 @@ Features:
 
 * Generate Getters, Setters or Both
 * Can be applied to all class properties or just to a single one
-* Description, Type and Type Hinting automatically discovered from the variable dockblock
+* Description, Type and Type Hinting automatically discovered from the variable docblock
 * fully customizable templates
 
 
@@ -83,13 +83,19 @@ _default_: **camelCaseFluent**
 
 _description_: the template to use
 
-###type_hint_ignore
+### type_hint_ignore
 _type_: **list of strings**
 
 _default_: **["mixed", "int","integer", "double", "float", "number", "string", "boolean", "bool", "numeric", "unknown"]**
 
 _description_: if the property has one of the types listed type hinting will not be used
 
+### setter_before_getter
+_type_: **boolean**
+
+_default_: **false**
+
+_description_: Set to true to generate setter code before getters
 
 Creating your own template
 --------------------------
