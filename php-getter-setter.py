@@ -24,58 +24,50 @@ class Prefs:
     """
     def __init__(self):
         self.loaded = False
-        self.data = {};
+        self.data = {}
 
     def get(self, name):
-        if (False == self.loaded) :
-            self.load();
+        if (False == self.loaded):
+            self.load()
 
         return self.data[name]
 
     def load(self):
-        if self.loaded :
+        if self.loaded:
             return
 
         settings = sublime.load_settings('php-getters-setters.sublime-settings')
 
         self.data['typeHintIgnore'] = settings.get('type_hint_ignore')
-        msg ("ignored type hinting var types %s" % self.data['typeHintIgnore'])
+        msg("ignored type hinting var types %s" % self.data['typeHintIgnore'])
 
         self.data['template'] = settings.get('template')
-        msg ("template is  '%s'" % self.data['template'])
-
+        msg("template is  '%s'" % self.data['template'])
 
         self.data['registerTemplates'] = settings.get('registerTemplates', [])
         msg("register extra user templates %s" % self.data['registerTemplates'])
 
         self.loaded = True
 
-
-
 class TemplateManager(object):
     templates = {}
 
     def register(self, template):
-        self.templates[template.name] = template;
+        self.templates[template.name] = template
         msg("Registered template : '%s'" % template.name)
 
-
-    def get (self, name):
+    def get(self, name):
         return self.templates[name]
-
-
-
 
 class Variable(object):
     def __init__(self, name, visibility, typeName = None, description=None):
-        self.name        = name
-        self.visibility  = visibility
-        self.type        = typeName
+        self.name = name
+        self.visibility = visibility
+        self.type = typeName
         self.description = description
-        self.Prefs       = Prefs
-        self.template    = TemplateManager.get(self.Prefs.get('template'))
-        self.style       = self.template.style
-
+        self.Prefs = Prefs
+        self.template = TemplateManager.get(self.Prefs.get('template'))
+        self.style = self.template.style
 
     def getName(self):
         return self.name
@@ -83,19 +75,19 @@ class Variable(object):
     def getVisibility(self):
         return self.visibility
 
-    def getVisibilityPrefix( self ) :
+    def getVisibilityPrefix(self):
         visibility = self.visibility
         Prefix = ''
 
-        if ( visibility == 'private' ) :
+        if (visibility == 'private'):
             Prefix = '_'
 
         return Prefix
 
-    def getParam( self ) :
+    def getParam(self):
         name = self.name
 
-        if ( name[0] == '_' ) :
+        if (name[0] == '_'):
             name = name[1:]
 
         return name
@@ -104,16 +96,16 @@ class Variable(object):
         style = self.style
         name = self.getName()
 
-        if 'camelCase' == style :
+        if 'camelCase' == style:
             name = ' '.join(re.findall('(?:[^_a-z]{0,2})[^_A-Z]*', name)).lower()
-        else :
+        else:
             name = name.replace('_', ' ')
 
         return name
 
     def getDescription(self):
         if self.description is None or "" == self.description:
-            self.description = 'value of %s' %self.getName() #get description from name
+            self.description = 'value of %s' % self.getName() # get description from name
         return self.description
 
     def getPartialFunctionName(self):
@@ -121,23 +113,23 @@ class Variable(object):
         # print style
         name = self.getName()
 
-        if ( name[0] == '_' and name[1].islower() and name[2].isupper() ) :
+        if name[0] == '_' and name[1].islower() and name[2].isupper():
             name = name[2:]  # _aTest
-        elif ( name[0].islower() and name[1].isupper() ) :
+        elif (name[0].islower() and name[1].isupper()):
             name = name[1:]  # aTest
-        elif ( name[0] == '_' ) :
+        elif (name[0] == '_'):
             name = name[1:]  # _test OR _Test
 
-        if 'camelCase' == style :
+        if 'camelCase' == style:
             var = name[0].upper() + name[1:]
-        else :
+        else:
             var = name
 
         return var
 
     def getGetterFunctionName(self):
         style = self.style
-        if 'camelCase' == style :
+        if 'camelCase' == style:
             return "get%s" % self.getPartialFunctionName()
 
         return "get_%s" % self.getPartialFunctionName()
@@ -146,7 +138,7 @@ class Variable(object):
         style = self.style
         visPrefix = self.getVisibilityPrefix()
 
-        if 'camelCase' == style :
+        if 'camelCase' == style:
             return visPrefix + "set%s" % self.getPartialFunctionName()
 
         return visPrefix + "set_%s" % self.getPartialFunctionName()
@@ -155,7 +147,7 @@ class Variable(object):
         return self.type
 
     def GetTypeHint(self):
-        if self.type in self.Prefs.get('typeHintIgnore') :
+        if self.type in self.Prefs.get('typeHintIgnore'):
             return ''
 
         if self.type.find(" ") > -1 or self.type.find("|") > -1:
@@ -173,7 +165,7 @@ class DocBlock(object):
         self.tags = {}
         self.description = ''
 
-    def hasTag(self, name) :
+    def hasTag(self, name):
         return name in self.tags
 
     def hasDescription(self):
@@ -200,17 +192,16 @@ class DocBlock(object):
 
         for line in lines:
             line = line.strip(' \t*/')
-            if (line.startswith('@')) :
+            if (line.startswith('@')):
                 nameMatches = re.findall('\@(\w+) (:?.*)[ ]?.*', line)
-                if len(nameMatches) > 0 :
+                if len(nameMatches) > 0:
                     name = nameMatches[0][0]
                     value = nameMatches[0][1]
 
                     self.addTag(name.strip('@'), value)
                 # [name, value, other] = line.split(" ", 2)
                 else:
-                    msg("Error: could not parse line %s" %line)
-
+                    msg("Error: could not parse line %s" % line)
             else:
                 if len(line) > 0:
                     description.append(line)
@@ -223,7 +214,7 @@ class Parser(object):
         parses text to get class variables so that make the magic can happen
     """
     def __init__(self, content):
-        self.content        = content
+        self.content = content
         self.functionRegExp = ".*function.*%s"
         self.variableRegExp = '((?:private|public|protected)[ ]{0,}(?:final|static)?[ ]{0,}(?:\$.*?)[ |=|;].*)\n'
 
@@ -243,39 +234,36 @@ class Parser(object):
         content = self.getContent()
         matchPos = content.find(line)
 
-
-
         lineByLine = content[:matchPos].split("\n")
         lineByLine.reverse()
         commentStart = 0
         commentEnd = 0
 
-        for n in range(len(lineByLine)) :
+        for n in range(len(lineByLine)):
             line = lineByLine[n].strip()
-            if "\n" == line :
+            if "\n" == line:
                 continue
 
-            elif "\r\n" == line :
+            elif "\r\n" == line:
                 continue
 
-            elif "" == line :
+            elif "" == line:
                 continue
 
-            elif '*/' == line :
-                commentStart = n +1
+            elif '*/' == line:
+                commentStart = n + 1
 
-            elif '/**' == line :
+            elif '/**' == line:
                 commentEnd = n
                 break
 
             elif 0 == commentStart:
                 break
 
-
-        if commentStart == commentEnd :
+        if commentStart == commentEnd:
             return ""
 
-        if (commentStart == 0) or (commentEnd == 0) :
+        if commentStart == 0 or commentEnd == 0:
             return ""
 
         result = lineByLine[commentStart:commentEnd]
@@ -289,13 +277,13 @@ class Parser(object):
         """
         nameMatches = re.findall('\$(.*?)[ |=|;]', line)
         name = "Unknown"
-        if len(nameMatches) >= 0 :
+        if len(nameMatches) >= 0:
             name = nameMatches[0]
 
         visibility = 'public'
-        visibilityMatches = re.findall( '^(public|protected|private)', line )
+        visibilityMatches = re.findall('^(public|protected|private)', line)
 
-        if len( visibilityMatches ) >= 0 :
+        if len(visibilityMatches) >= 0:
             visibility = visibilityMatches[0]
 
         dockBlockText = self._getDockBlockOfVariable(line)
@@ -304,7 +292,7 @@ class Parser(object):
 
         typeName = 'mixed'
         if docblock.hasTag('var'):
-            typeName    =  docblock.getTag('var')
+            typeName = docblock.getTag('var')
         description = docblock.getDescription()
 
         return Variable(name = name, visibility = visibility, typeName = typeName, description = description)
@@ -313,17 +301,15 @@ class Parser(object):
         """
             returns a list of Variable objects, created from the parsed code
         """
-        content       = self.getContent()
+        content = self.getContent()
         variablesList = []
 
         matches = re.findall(self.variableRegExp, content,  re.IGNORECASE)
-        for match in matches :
+        for match in matches:
             variable = self._processVariable(match)
             variablesList.append(variable)
 
         return variablesList
-
-
 
 class Base(sublime_plugin.TextCommand):
     def __init__(self, arg):
@@ -342,17 +328,17 @@ class Base(sublime_plugin.TextCommand):
     def getParser(self, content = ''):
         self.parser = Parser(content)
 
-        return  self.parser
+        return self.parser
 
     def findLastBracket(self):
-        view =self.view
+        view = self.view
         pos = 0
         lastPos = 1
 
         pos = view.find('\{', 0)
 
         while True:
-            pos = view.find('\}', pos.end());
+            pos = view.find('\}', pos.end())
             msg(lastPos)
 
             if (pos.begin() == -1):
@@ -360,9 +346,7 @@ class Base(sublime_plugin.TextCommand):
 
             lastPos = pos.begin()
 
-
         return lastPos
-
 
     def getVariables(self, parser):
         filename = self.view.file_name()
@@ -373,15 +357,15 @@ class Base(sublime_plugin.TextCommand):
 
     def generateFunctionCode(self, template, variable):
         substitutions = {
-            "name"           : variable.getName(),
-            "param"          : variable.getParam(),
-            "visibility"     : variable.getVisibility(),
-            "visibilityPrefix" : variable.getVisibilityPrefix(),
-            "type"           : variable.getType(),
-            "normalizedName" : variable.getPartialFunctionName(),
-            "description"    : variable.getDescription(),
-            "typeHint"       : variable.GetTypeHint(),
-            "humanName"      : variable.getHumanName()
+            "name": variable.getName(),
+            "param": variable.getParam(),
+            "visibility": variable.getVisibility(),
+            "visibilityPrefix": variable.getVisibilityPrefix(),
+            "type": variable.getType(),
+            "normalizedName": variable.getPartialFunctionName(),
+            "description": variable.getDescription(),
+            "typeHint": variable.GetTypeHint(),
+            "humanName": variable.getHumanName()
         }
 
         return template % substitutions
@@ -403,7 +387,7 @@ class Base(sublime_plugin.TextCommand):
             msg("function %s already present, skipping" % variable.getSetterFunctionName())
             return ''
 
-        template =TemplateManager.get(Prefs.get('template'))
+        template = TemplateManager.get(Prefs.get('template'))
         code = self.generateFunctionCode(template.setter, variable)
         # if type hinting is not to be show we get "( " instead of (
         code = code.replace('( ', '(')
@@ -427,7 +411,6 @@ class Base(sublime_plugin.TextCommand):
 class PhpGenerateFor(Base):
     what = 'getter'
 
-
     def run(self, edit):
         self.edit = edit
 
@@ -436,7 +419,7 @@ class PhpGenerateFor(Base):
         self.vars = []
 
         for variable in parser.getClassVariables():
-            item =[ variable.getName(), variable.getDescription( )]
+            item = [variable.getName(), variable.getDescription()]
             self.vars.append(item)
 
         self.view.window().show_quick_panel(self.vars, self.write)
@@ -446,12 +429,12 @@ class PhpGenerateFor(Base):
         parser = self.getParser(self.getContent())
         for variable in parser.getClassVariables():
             if name == variable.getName():
-                if 'getter' == self.what :
+                if 'getter' == self.what:
                     # code = self.generateGetterFunction(parser, variable)
                     self.view.run_command('php_generate_getters', {'name': name})
-                elif 'setter' == self.what :
+                elif 'setter' == self.what:
                     self.view.run_command('php_generate_setters', {'name': name})
-                else :
+                else:
                     self.view.run_command('php_generate_getters_setters', {'name': name})
                 # self.writeAtEnd(self.edit, code)
 
@@ -466,13 +449,13 @@ class PhpGenerateGetterSetterForCommand(PhpGenerateFor):
 
 class PhpGenerateGettersCommand(Base):
     def run(self, edit, **args):
-        if not 'name' in args :
+        if not 'name' in args:
             args['name'] = None
 
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
-            if (args['name'] is not None and variable.getName() != args['name']) :
+            if args['name'] is not None and variable.getName() != args['name']:
                 continue
 
             code += self.generateGetterFunction(parser, variable)
@@ -481,13 +464,13 @@ class PhpGenerateGettersCommand(Base):
 
 class PhpGenerateSettersCommand(Base):
     def run(self, edit, **args):
-        if not 'name' in args :
+        if not 'name' in args:
             args['name'] = None
 
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
-            if (args['name'] is not None and variable.getName() != args['name']) :
+            if args['name'] is not None and variable.getName() != args['name']:
                 continue
 
             code += self.generateSetterFunction(parser, variable)
@@ -496,13 +479,13 @@ class PhpGenerateSettersCommand(Base):
 
 class PhpGenerateGettersSettersCommand(Base):
     def run(self, edit, **args):
-        if not 'name' in args :
+        if not 'name' in args:
             args['name'] = None
 
         parser = self.getParser(self.getContent())
         code = ''
         for variable in parser.getClassVariables():
-            if (args['name'] is not None and variable.getName() != args['name']) :
+            if args['name'] is not None and variable.getName() != args['name']:
                 continue
 
             code += self.generateGetterFunction(parser, variable)
@@ -558,7 +541,7 @@ class camelCase(object):
 class camelCaseFluent(camelCase):
     name = "camelCaseFluent"
     style = 'camelCase'
-    setter ="""
+    setter = """
     /**
      * Sets the %(description)s.
      *
@@ -604,7 +587,7 @@ class snakeCase(object):
 class snakeCaseFluent(snakeCase):
     name = "snakeCaseFluent"
     style = 'snakeCase'
-    setter ="""
+    setter = """
         /**
      * Sets the %(description)s.
      *
@@ -620,9 +603,7 @@ class snakeCaseFluent(snakeCase):
     }
     """
 
-
-Prefs = Prefs();
-
+Prefs = Prefs()
 
 TemplateManager = TemplateManager()
 
@@ -632,6 +613,5 @@ def plugin_loaded():
     TemplateManager.register(snakeCase())
     TemplateManager.register(snakeCaseFluent())
 
-    for template in Prefs.get('registerTemplates') :
+    for template in Prefs.get('registerTemplates'):
         TemplateManager.register(eval(template+'()'))
-
