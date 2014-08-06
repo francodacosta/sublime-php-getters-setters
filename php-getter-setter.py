@@ -1,10 +1,7 @@
 import sys
-import os
 import re
 import sublime
 import sublime_plugin
-import sys
-import re
 
 # sys.path.append(
 #     os.path.join(
@@ -47,6 +44,9 @@ class Prefs:
         self.data['registerTemplates'] = settings.get('registerTemplates', [])
         msg("register extra user templates %s" % self.data['registerTemplates'])
 
+        self.data['ignoreVisibility'] = settings.get('ignore_visibility', [])
+        msg("ignoring visibility to getters and setters")
+
         self.loaded = True
 
 class TemplateManager(object):
@@ -62,10 +62,12 @@ class TemplateManager(object):
 class Variable(object):
     def __init__(self, name, visibility, typeName = None, description=None):
         self.name = name
-        self.visibility = visibility
         self.type = typeName
         self.description = description
         self.Prefs = Prefs
+        if self.Prefs.get('ignoreVisibility'):
+            visibility = 'public'
+        self.visibility = visibility
         self.template = TemplateManager.get(self.Prefs.get('template'))
         self.style = self.template.style
 
@@ -110,7 +112,6 @@ class Variable(object):
 
     def getPartialFunctionName(self):
         style = self.style
-        # print style
         name = self.getName()
 
         if name[0] == '_' and name[1].islower() and name[2].isupper():
@@ -121,7 +122,8 @@ class Variable(object):
             name = name[1:]  # _test OR _Test
 
         if 'camelCase' == style:
-            var = name[0].upper() + name[1:]
+            var = re.sub(r'_([a-z])', lambda pat: pat.group(1).upper(), name)
+            var = var[0].upper() + var[1:]
         else:
             var = name
 
@@ -147,6 +149,7 @@ class Variable(object):
         return self.type
 
     def GetTypeHint(self):
+        print(self.type)
         if self.type in self.Prefs.get('typeHintIgnore'):
             return ''
 
