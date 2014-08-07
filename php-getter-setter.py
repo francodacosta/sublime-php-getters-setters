@@ -47,6 +47,9 @@ class Prefs:
         self.data['ignoreVisibility'] = settings.get('ignore_visibility', [])
         msg("ignoring visibility to getters and setters")
 
+        self.setterBeforeGetter = settings.get('setter_before_getter', False)
+        msg("setterBeforeGetter is %s" % str(self.setterBeforeGetter))
+
         self.loaded = True
 
 class TemplateManager(object):
@@ -194,8 +197,8 @@ class DocBlock(object):
         description = []
 
         for line in lines:
-            line = line.strip(' \t*/')
-            if (line.startswith('@')):
+            line = line.strip(' \t*/').rstrip('.')
+            if line.startswith('@'):
                 nameMatches = re.findall('\@(\w+) (:?.*)[ ]?.*', line)
                 if len(nameMatches) > 0:
                     name = nameMatches[0][0]
@@ -491,8 +494,12 @@ class PhpGenerateGettersSettersCommand(Base):
             if args['name'] is not None and variable.getName() != args['name']:
                 continue
 
-            code += self.generateGetterFunction(parser, variable)
-            code += self.generateSetterFunction(parser, variable)
+            if self.Prefs.setterBeforeGetter:
+                code += self.generateSetterFunction(parser, variable)
+                code += self.generateGetterFunction(parser, variable)
+            else:
+                code += self.generateGetterFunction(parser, variable)
+                code += self.generateSetterFunction(parser, variable)
 
         self.writeAtEnd(edit, code)
 
