@@ -529,7 +529,7 @@ class camelCase(object):
     {
         return $this->%(name)s;
     }
-    """
+"""
 
     setter = """
     /**
@@ -609,7 +609,7 @@ class snakeCaseFluent(snakeCase):
 
         return $this;
     }
-    """
+"""
 
 Prefs = Prefs()
 
