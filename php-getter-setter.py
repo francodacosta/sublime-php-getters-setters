@@ -102,7 +102,8 @@ class Variable(object):
         name = self.getName()
 
         if 'camelCase' == style:
-            name = ' '.join(re.findall('(?:[^_a-z]{0,2})[^_A-Z]*', name)).lower()
+            # FIXME how does this differ from the else?
+            name = ' '.join(re.findall('(?:[^_a-z]{0,2})[^_A-Z]+', name)).lower()
         else:
             name = name.replace('_', ' ')
 
@@ -127,6 +128,7 @@ class Variable(object):
         if 'camelCase' == style:
             var = re.sub(r'_([a-z])', lambda pat: pat.group(1).upper(), name)
             var = var[0].upper() + var[1:]
+            var = var.replace("_", "")
         else:
             var = name
 
