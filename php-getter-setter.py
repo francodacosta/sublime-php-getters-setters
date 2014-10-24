@@ -102,7 +102,8 @@ class Variable(object):
         name = self.getName()
 
         if 'camelCase' == style:
-            name = ' '.join(re.findall('(?:[^_a-z]{0,2})[^_A-Z]*', name)).lower()
+            # FIXME how does this differ from the else?
+            name = ' '.join(re.findall('(?:[^_a-z]{0,2})[^_A-Z]+', name)).lower()
         else:
             name = name.replace('_', ' ')
 
@@ -127,6 +128,7 @@ class Variable(object):
         if 'camelCase' == style:
             var = re.sub(r'_([a-z])', lambda pat: pat.group(1).upper(), name)
             var = var[0].upper() + var[1:]
+            var = var.replace("_", "")
         else:
             var = name
 
@@ -152,7 +154,6 @@ class Variable(object):
         return self.type
 
     def GetTypeHint(self):
-        print(self.type)
         if self.type in self.Prefs.get('typeHintIgnore'):
             return ''
 
@@ -221,7 +222,7 @@ class Parser(object):
     """
     def __init__(self, content):
         self.content = content
-        self.functionRegExp = ".*function.*%s"
+        self.functionRegExp = ".*function.*%s\("
         self.variableRegExp = '((?:private|public|protected)[ ]{0,}(?:final|static)?[ ]{0,}(?:\$.*?)[ |=|;].*)\n'
 
     def getContent(self):
@@ -345,11 +346,8 @@ class Base(sublime_plugin.TextCommand):
 
         while True:
             pos = view.find('\}', pos.end())
-            msg(lastPos)
-
             if (pos.begin() == -1):
                 break
-
             lastPos = pos.begin()
 
         return lastPos
@@ -531,7 +529,7 @@ class camelCase(object):
     {
         return $this->%(name)s;
     }
-    """
+"""
 
     setter = """
     /**
@@ -611,7 +609,7 @@ class snakeCaseFluent(snakeCase):
 
         return $this;
     }
-    """
+"""
 
 Prefs = Prefs()
 
