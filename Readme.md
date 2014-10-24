@@ -66,6 +66,19 @@ As you can see if get to trouble of commenting your variables, the generated fun
 
 This is an huge time saver!
 
+Usage
+-----
+
+Commands available are:
+
+ * Generate Getters and Setters
+ * Generate Getter
+ * Generate Setter
+ * Generate Getter for...
+ * Generate Setter for...
+
+These can be accesed via the context menu (right click on the source of any open PHP file) or the command pallette. The currently open file *must* be a PHP file.
+
 Settings Reference
 ------------------
 
