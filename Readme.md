@@ -114,36 +114,50 @@ _description_: Set to true to generate setter code before getters
 
 Creating your own template
 --------------------------
-create a file named ```user_templates.py``` in ```<packages folder>/PHP Getters and Setters/```
 
-example template:
-```python
-class camelCase(object):
-    name = "camelCase"
+
+[package-dir] is your [package directory](http://docs.sublimetext.info/en/sublime-text-3/basic_concepts.html#the-packages-directory).
+
+* Make a directory called ```[package-dir]/PHP Getters and Setters```.
+* Put the following in a file at ```[package-dir]/PHP Getters and Setters/user_templates.py```.
+  ```
+class myTemplate(object):
+    name = "myTemplate"
     style = 'camelCase' # can also be snakeCase
-    getter = """
-/**
-* Gets the %(description)s.
-*
-* @return %(type)s
-*/
-public function get%(normalizedName)s()
-{
-    return $this->%(name)s;
-}
+    getter = """ 
+    /**
+    * Gets the %(description)s.
+    *
+    * @return %(type)s
+    */
+    public function get%(normalizedName)s()
+    {
+        return $this->%(name)s;
+    }
 """
 
-    setter = """
-/**
-* Sets the %(description)s.
-*
-* @param %(type)s $%(name)s the %(humanName)s
-*
-* @return self
-*/
-public function set%(normalizedName)s(%(typeHint)s $%(name)s)
-{
-    $this->%(name)s = $%(name)s;
-}
+    setter = """ 
+    /**
+    * Sets the %(description)s.
+    *
+    * @param %(type)s $%(name)s the %(humanName)s
+    *
+    * @return self
+    */
+    public function set%(normalizedName)s(%(typeHint)s $%(name)s)
+    {
+        $this->%(name)s = $%(name)s;
+    }
 """
-```
+  ```
+* Edit the parts between setter and getter how you want.
+* Edit your user settings for this package. On OSX that's ```Preferences | Package Settings | PHP Getters and Setters | Settings - User```.
+* Add the following settings
+  ```
+    // user defined templates to load
+    "registerTemplates" : [ "myTemplate" ],
+
+    // the template used to generate code
+    "template" : "myTemplate",
+  ```
+  
