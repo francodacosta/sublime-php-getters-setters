@@ -47,6 +47,9 @@ class Prefs:
         self.data['ignoreVisibility'] = settings.get('ignore_visibility', [])
         msg("ignoring visibility to getters and setters")
 
+        self.data['visibilityPrefix'] = settings.get('visibility_prefix', [])
+        msg("visibilityPrefix is %s" % str(self.visibilityPrefix))
+
         self.setterBeforeGetter = settings.get('setter_before_getter', False)
         msg("setterBeforeGetter is %s" % str(self.setterBeforeGetter))
 
@@ -85,7 +88,7 @@ class Variable(object):
         Prefix = ''
 
         if (visibility == 'private'):
-            Prefix = '_'
+            Prefix = self.Prefs.get('visibilityPrefix')
 
         return Prefix
 
