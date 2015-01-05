@@ -57,9 +57,11 @@ Usage Instruction:
          *
          * @param AbcClass $foo the foo
          */
-        public function setFoo(AbcClass $foo)
+        private function _setFoo(AbcClass $foo)
         {
             $this->foo = $foo;
+            
+            return $this;
         }
     }
     ```
@@ -83,6 +85,13 @@ These can be accesed via the context menu (right click on the source of any open
 
 Settings Reference
 ------------------
+
+###ignore_visibility
+_type_    : **boolean**
+
+_default_ : **false**
+
+_description_: ignore visibilty for setters generation
 
 ###registerTemplates
 _type_   : **array**
