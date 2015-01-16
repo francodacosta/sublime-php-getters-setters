@@ -169,4 +169,5 @@ class myTemplate(object):
     // the template used to generate code
     "template" : "myTemplate",
   ```
+ * restart sublime to use the new template
   
