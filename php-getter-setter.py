@@ -403,7 +403,7 @@ class Base(sublime_plugin.TextCommand):
         self.view.insert(edit, lastPos, text)
 
     def isPhpSyntax(self):
-        return re.search(".*\PHP.tmLanguage", self.view.settings().get('syntax')) is not None
+        return re.search(".*\PHP.sublime-syntax", self.view.settings().get('syntax')) is not None
 
     def is_enabled(self):
         return self.isPhpSyntax()
