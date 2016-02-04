@@ -8,5 +8,14 @@
     // if docblock says variable id any of the following do not add type hinting to functions
     "type_hint_ignore" :  ["mixed", "int","integer", "double", "float", "number", "string", "boolean", "bool", "numeric", "unknown"],
 
+    // if true, all variables will be handled as public and no visibility prefix will be used
+    "ignore_visibility": false,
+
+    // generate getters before setters
+    "setter_before_getter": false,
+
+    // prefix setter function if ignore_visibility is false
+    "visibility_prefix" : "_"
+
 }
 
