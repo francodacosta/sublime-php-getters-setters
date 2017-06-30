@@ -439,6 +439,8 @@ class PhpGenerateFor(Base):
         self.view.window().show_quick_panel(self.vars, self.write)
 
     def write(self, index):
+        if index == -1: #escaped
+            return
         name = self.vars[index][0]
         parser = self.getParser(self.getContent())
         for variable in parser.getClassVariables():
