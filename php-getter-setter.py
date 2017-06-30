@@ -8,7 +8,6 @@ import sublime_plugin
 #         os.path.dirname(os.path.realpath(__file__))
 #     )
 # )
-print (sys.path)
 from .user_templates import *
 
 
@@ -63,7 +62,7 @@ class TemplateManager(object):
         return self.templates[name]
 
 class Variable(object):
-    def __init__(self, name, visibility, typeName = None, description=None):
+    def __init__(self, name, visibility, typeName=None, description=None):
         self.name = name
         self.type = typeName
         self.description = description
@@ -134,26 +133,35 @@ class Variable(object):
 
         return var
 
+    def getGetterPrefix(self):
+        return "is" if 'bool' in self.getType() else "get"
+
     def getGetterFunctionName(self):
         style = self.style
-        if 'camelCase' == style:
-            return "get%s" % self.getPartialFunctionName()
+        getterPrefix = self.getGetterPrefix()
 
-        return "get_%s" % self.getPartialFunctionName()
+        if 'camelCase' == style:
+            return getterPrefix + "%s" % self.getPartialFunctionName()
+
+        return getterPrefix + "_%s" % self.getPartialFunctionName()
+
+    def getSetterPrefix(self):
+        return "set"
 
     def getSetterFunctionName(self):
         style = self.style
         visPrefix = self.getVisibilityPrefix()
+        setterPrefix = self.getSetterPrefix()
 
         if 'camelCase' == style:
-            return visPrefix + "set%s" % self.getPartialFunctionName()
+            return visPrefix + setterPrefix + "%s" % self.getPartialFunctionName()
 
-        return visPrefix + "set_%s" % self.getPartialFunctionName()
+        return visPrefix + setterPrefix + "_%s" % self.getPartialFunctionName()
 
     def getType(self):
         return self.type
 
-    def GetTypeHint(self):
+    def getTypeHint(self):
         if self.type in self.Prefs.get('typeHintIgnore'):
             return ''
 
@@ -368,8 +376,10 @@ class Base(sublime_plugin.TextCommand):
             "type": variable.getType(),
             "normalizedName": variable.getPartialFunctionName(),
             "description": variable.getDescription(),
-            "typeHint": variable.GetTypeHint(),
-            "humanName": variable.getHumanName()
+            "typeHint": variable.getTypeHint(),
+            "humanName": variable.getHumanName(),
+            "getterPrefix": variable.getGetterPrefix(),
+            "setterPrefix": variable.getSetterPrefix()
         }
 
         return template % substitutions
@@ -515,6 +525,33 @@ class PhpGenerateGettersSetterUnavailable(Base):
     def description(self):
         return "Only available for PHP syntax buffers"
 
+class PSR2(object):
+  name = "PSR2"
+  style = 'camelCase'
+
+  getter = """
+    /**
+     * @return %(type)s
+     */
+    public function %(getterPrefix)s%(normalizedName)s()
+    {
+        return $this->%(name)s;
+    }
+"""
+
+  setter = """
+    /**
+     * @param %(type)s $%(name)s
+     *
+     * @return self
+     */
+    public function %(setterPrefix)s%(normalizedName)s(%(typeHint)s $%(name)s)
+    {
+        $this->%(name)s = $%(name)s;
+
+        return $this;
+    }
+"""
 
 class camelCase(object):
     name = "camelCase"
@@ -546,6 +583,7 @@ class camelCase(object):
         return $this;
     }
 """
+
 class camelCaseFluent(camelCase):
     name = "camelCaseFluent"
     style = 'camelCase'
@@ -584,19 +622,22 @@ class snakeCase(object):
      * Sets the %(description)s.
      *
      * @param %(type)s $%(name)s the %(name)s
+     *
+     * @return self
      */
     %(visibility)s function %(visibilityPrefix)sset_%(normalizedName)s(%(typeHint)s $%(param)s)
     {
         $this->%(name)s = $%(param)s;
+
+        return $this;
     }
 """
-
 
 class snakeCaseFluent(snakeCase):
     name = "snakeCaseFluent"
     style = 'snakeCase'
     setter = """
-        /**
+    /**
      * Sets the %(description)s.
      *
      * @param %(type)s $%(name)s the %(name)s
@@ -616,6 +657,7 @@ Prefs = Prefs()
 TemplateManager = TemplateManager()
 
 def plugin_loaded():
+    TemplateManager.register(PSR2())
     TemplateManager.register(camelCase())
     TemplateManager.register(camelCaseFluent())
     TemplateManager.register(snakeCase())
