@@ -10,7 +10,7 @@
     },
     {
         "caption": "PHP: Generate Setters",
-        "command": "php_generate_getters"
+        "command": "php_generate_setters"
     },
     {
         "command": "php_generate_getter_for",
