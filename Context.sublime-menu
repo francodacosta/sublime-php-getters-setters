@@ -10,7 +10,7 @@
             { "caption" : "-" },
             { "command": "php_generate_getters_setters", "caption": "Generate All" },
             { "command": "php_generate_getters", "caption": "Generate Getters" },
-            { "command": "php_generate_setters", "caption": "Generate setters" },
+            { "command": "php_generate_setters", "caption": "Generate Setters" },
             { "command": "php_generate_getters_setter_unavailable", "caption": "" }
         ]
     }

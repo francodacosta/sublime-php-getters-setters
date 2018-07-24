@@ -41,7 +41,7 @@ Usage Instruction:
          * @var AbcClass
          */
         private $foo;
-    
+
         /**
          * Gets the foo container.
          *
@@ -51,7 +51,7 @@ Usage Instruction:
         {
             return $this->foo;
         }
-    
+
         /**
          * Sets the foo container.
          *
@@ -60,13 +60,13 @@ Usage Instruction:
         private function _setFoo(AbcClass $foo)
         {
             $this->foo = $foo;
-            
+
             return $this;
         }
     }
     ```
 
-As you can see if get to trouble of commenting your variables, the generated functions can be used without modification.
+As you can see, if you go though the trouble of commenting your variables, the generated functions can be used without modification.
 
 This is an huge time saver!
 
@@ -81,7 +81,7 @@ Commands available are:
  * Generate Getter for...
  * Generate Setter for...
 
-These can be accesed via the context menu (right click on the source of any open PHP file) or the command pallette. The currently open file *must* be a PHP file.
+These can be accessed via the context menu (right click on the source of any open PHP file) or the command palette. The currently open file *must* be a PHP file.
 
 Settings Reference
 ------------------
@@ -91,7 +91,7 @@ _type_    : **boolean**
 
 _default_ : **false**
 
-_description_: ignore visibilty for setters generation
+_description_: ignore visibility for setters generation
 
 ###registerTemplates
 _type_   : **array**
@@ -133,7 +133,7 @@ Creating your own template
 class myTemplate(object):
     name = "myTemplate"
     style = 'camelCase' # can also be snakeCase
-    getter = """ 
+    getter = """
     /**
     * Gets the %(description)s.
     *
@@ -145,7 +145,7 @@ class myTemplate(object):
     }
 """
 
-    setter = """ 
+    setter = """
     /**
     * Sets the %(description)s.
     *
@@ -170,4 +170,4 @@ class myTemplate(object):
     "template" : "myTemplate",
   ```
  * restart sublime to use the new template
-  
+

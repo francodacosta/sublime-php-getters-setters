@@ -116,12 +116,13 @@ class Variable(object):
     def getPartialFunctionName(self):
         style = self.style
         name = self.getName()
+        length = len(name)
 
-        if name[0] == '_' and name[1].islower() and name[2].isupper():
+        if length > 1 and name[0] == '_' and name[1].islower() and name[2].isupper():
             name = name[2:]  # _aTest
-        elif (name[0].islower() and name[1].isupper()):
+        elif length > 1 and (name[0].islower() and name[1].isupper()):
             name = name[1:]  # aTest
-        elif (name[0] == '_'):
+        elif length > 1 and (name[0] == '_'):
             name = name[1:]  # _test OR _Test
 
         if 'camelCase' == style:
