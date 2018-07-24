@@ -66,7 +66,7 @@ Usage Instruction:
     }
     ```
 
-As you can see if go though the trouble of commenting your variables, the generated functions can be used without modification.
+As you can see, if you go though the trouble of commenting your variables, the generated functions can be used without modification.
 
 This is an huge time saver!
 
