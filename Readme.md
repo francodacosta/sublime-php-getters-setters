@@ -127,9 +127,9 @@ Creating your own template
 
 [package-dir] is your [package directory](http://docs.sublimetext.info/en/sublime-text-3/basic_concepts.html#the-packages-directory).
 
-* Make a directory called ```[package-dir]/PHP Getters and Setters```.
-* Put the following in a file at ```[package-dir]/PHP Getters and Setters/user_templates.py```.
-  ```
+* Make a directory called `[package-dir]/PHP Getters and Setters`.
+* Put the following in a file at `[package-dir]/PHP Getters and Setters/user_templates.py`.
+```python
 class myTemplate(object):
     name = "myTemplate"
     style = 'camelCase' # can also be snakeCase
@@ -158,7 +158,7 @@ class myTemplate(object):
         $this->%(name)s = $%(name)s;
     }
 """
-  ```
+```
 * Edit the parts between setter and getter how you want.
 * Edit your user settings for this package. On OSX that's ```Preferences | Package Settings | PHP Getters and Setters | Settings - User```.
 * Add the following settings
